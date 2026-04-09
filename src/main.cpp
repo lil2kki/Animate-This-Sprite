@@ -3,6 +3,8 @@ using namespace geode::prelude;
 
 #include <regex>
 
+#define ps(...) string::pathToString(__VA_ARGS__)
+
 auto FOUNDED_ANIMATE_FILES = std::map<std::string, std::filesystem::path>();
 auto FOUND_ANIMATE_FILES() {
     log::info("searching animate files...");
@@ -11,9 +13,9 @@ auto FOUND_ANIMATE_FILES() {
         //.animate.json
         //log::debug("reading {}", path);
         for (auto file : file::readDirectory(path.c_str(), 1).unwrapOrDefault()) {
-            if (string::contains(file.string(), ".animate.json")) {
+            if (string::contains(ps(file), ".animate.json")) {
 
-                auto name = file.string();
+                auto name = ps(file);
 
                 auto search_paths = CCFileUtils::get()->getSearchPaths();
                 std::sort(search_paths.begin(), search_paths.end(), []
@@ -22,20 +24,20 @@ auto FOUND_ANIMATE_FILES() {
                     });
                 for (auto sp : search_paths) name = string::replace(name, sp, "");
 
-                name = string::replace(name, "{GameDir}", dirs::getGameDir().string()); //Directory where Geometry Dash is
-                name = string::replace(name, "{SaveDir}", dirs::getSaveDir().string()); //Directory where GD saves its files
-                name = string::replace(name, "{GeodeDir}", dirs::getGeodeDir().string()); //Directory where Geode is
-                name = string::replace(name, "{GeodeSaveDir}", dirs::getGeodeSaveDir().string()); //Directory where Geode saves its files
-                name = string::replace(name, "{GeodeResourcesDir}", dirs::getGeodeResourcesDir().string()); //Directory where Geode's resources are stored
-                name = string::replace(name, "{GeodeLogDir}", dirs::getGeodeLogDir().string()); //Directory where Geode's resources are stored
-                name = string::replace(name, "{TempDir}", dirs::getTempDir().string()); //Directory to store temporary files
-                name = string::replace(name, "{ModsDir}", dirs::getModsDir().string()); //Directory where mods are stored by default
-                name = string::replace(name, "{ModsSaveDir}", dirs::getModsSaveDir().string()); //Directory where mods' save data is stored
-                name = string::replace(name, "{ModRuntimeDir}", dirs::getModRuntimeDir().string()); //Directory where mods' unzipped packages are stored at runtime
-                name = string::replace(name, "{ModConfigDir}", dirs::getModConfigDir().string()); //Directory where mods' config files lie
-                name = string::replace(name, "{IndexDir}", dirs::getIndexDir().string()); //Directory where Geode stores the cached index
-                name = string::replace(name, "{CrashlogsDir}", dirs::getCrashlogsDir().string()); //Directory where crashlogs are stored
-                name = string::replace(name, "{ModPersistentDir}", dirs::getModPersistentDir().string()); //Directory where mods' persistent files lie, this directory is not deleted even when Geode is uninstalled
+                name = string::replace(name, "{GameDir}", ps(dirs::getGameDir())); //Directory where Geometry Dash is
+                name = string::replace(name, "{SaveDir}", ps(dirs::getSaveDir())); //Directory where GD saves its files
+                name = string::replace(name, "{GeodeDir}", ps(dirs::getGeodeDir())); //Directory where Geode is
+                name = string::replace(name, "{GeodeSaveDir}", ps(dirs::getGeodeSaveDir())); //Directory where Geode saves its files
+                name = string::replace(name, "{GeodeResourcesDir}", ps(dirs::getGeodeResourcesDir())); //Directory where Geode's resources are stored
+                name = string::replace(name, "{GeodeLogDir}", ps(dirs::getGeodeLogDir())); //Directory where Geode's resources are stored
+                name = string::replace(name, "{TempDir}", ps(dirs::getTempDir())); //Directory to store temporary files
+                name = string::replace(name, "{ModsDir}", ps(dirs::getModsDir())); //Directory where mods are stored by default
+                name = string::replace(name, "{ModsSaveDir}", ps(dirs::getModsSaveDir())); //Directory where mods' save data is stored
+                name = string::replace(name, "{ModRuntimeDir}", ps(dirs::getModRuntimeDir())); //Directory where mods' unzipped packages are stored at runtime
+                name = string::replace(name, "{ModConfigDir}", ps(dirs::getModConfigDir())); //Directory where mods' config files lie
+                name = string::replace(name, "{IndexDir}", ps(dirs::getIndexDir())); //Directory where Geode stores the cached index
+                name = string::replace(name, "{CrashlogsDir}", ps(dirs::getCrashlogsDir())); //Directory where crashlogs are stored
+                name = string::replace(name, "{ModPersistentDir}", ps(dirs::getModPersistentDir())); //Directory where mods' persistent files lie, this directory is not deleted even when Geode is uninstalled
 
                 name = string::replace(name, "\\", "/");
 
@@ -49,9 +51,9 @@ auto FOUND_ANIMATE_FILES() {
 $on_mod(Loaded) {
 
     auto search_paths = {
-        getMod()->getConfigDir().string(),
-        getMod()->getSaveDir().string(),
-        getMod()->getTempDir().string()
+        ps(getMod()->getConfigDir()),
+        ps(getMod()->getSaveDir()),
+        ps(getMod()->getTempDir())
     };
     for (auto entry : search_paths) CCFileUtils::get()->addPriorityPath(entry.c_str());
 
@@ -78,7 +80,7 @@ class $modify(LoadingLayerFindAnimateFiles, LoadingLayer) {
     };
 
     void loadAssets() {
-        if (m_loadStep == 10)FOUND_ANIMATE_FILES();
+        if (m_loadStep == 10) FOUND_ANIMATE_FILES();
         return LoadingLayer::loadAssets();
     };
 
