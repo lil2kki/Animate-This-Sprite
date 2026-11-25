@@ -3,9 +3,9 @@ using namespace geode::prelude;
 
 #include <regex>
 
-#define ps(...) string::pathToString(__VA_ARGS__)
+#define ps(path) (path).string()
 
-auto FOUNDED_ANIMATE_FILES = std::map<std::string, std::filesystem::path>();
+auto FOUNDED_ANIMATE_FILES = std::map<std::string, asp::fs::Path>();
 auto FOUND_ANIMATE_FILES() {
     log::info("searching animate files...");
     FOUNDED_ANIMATE_FILES.clear();

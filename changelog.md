@@ -1,3 +1,5 @@
+# 1.0.6
+- Port the mod to Geode v6
 # 1.0.5
 - use string::pathToString to avoid crashes at users whose usernames are in cyrillic or other languages awwawaa
 
